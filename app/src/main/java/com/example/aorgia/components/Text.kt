@@ -6,22 +6,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.example.aorgia.ui.theme.LightDirtyGray
 
 @Composable
-fun StartTitle(title: String, modifier: Modifier) {
+fun MainTitle(title: String, modifier: Modifier) {
     Text(
         text = title,
         fontSize = 38.sp,
         fontWeight = FontWeight.SemiBold,
-        color = Color.White,
+        color = LightDirtyGray,
         modifier = modifier
             .wrapContentWidth(Alignment.CenterHorizontally),
         textAlign = TextAlign.Center,

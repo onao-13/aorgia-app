@@ -3,10 +3,8 @@ package com.example.aorgia.screens.starter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,7 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.aorgia.app.Screen
 import com.example.aorgia.components.MainButton
-import com.example.aorgia.components.StartTitle
+import com.example.aorgia.components.MainTitle
 import com.example.aorgia.ui.theme.AorgiaTheme
 
 @Composable
@@ -29,7 +27,7 @@ fun StartScreen(navController: NavController) {
     ) {
         val (text, button) = createRefs()
 
-        StartTitle(
+        MainTitle(
             title = "Это \n Аогия",
             modifier = Modifier
                 .fillMaxWidth()

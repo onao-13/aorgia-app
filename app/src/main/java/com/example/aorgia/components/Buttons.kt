@@ -2,18 +2,19 @@ package com.example.aorgia.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.aorgia.components.values.ComponentHeight
+import com.example.aorgia.components.values.ComponentWidth
+import com.example.aorgia.ui.theme.LightDirtyGray
 import com.example.aorgia.ui.theme.LightRed
 
 @Composable
@@ -21,7 +22,7 @@ import com.example.aorgia.ui.theme.LightRed
          * colors:
          *
          *      container: LightRed
-         *      content: White
+         *      content: LightDirtyGray
          */
 fun MainButton(
     onClick: () -> Unit,
@@ -32,11 +33,12 @@ fun MainButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = LightRed,
-            contentColor = Color.White
+            contentColor = LightDirtyGray
         ),
         modifier = modifier
-            .fillMaxWidth(0.85f)
-            .height(55.dp)
+            .fillMaxWidth(ComponentWidth.MainWidth85f.width)
+            .height(ComponentHeight.MainHeight55Dp.height),
+        shape = RoundedCornerShape(20.dp)
     ) {
         Text(
             text = title,
