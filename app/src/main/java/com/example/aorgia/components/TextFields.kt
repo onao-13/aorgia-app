@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.aorgia.components.values.ComponentHeight
 import com.example.aorgia.components.values.ComponentWidth
 import com.example.aorgia.ui.theme.LightDirtyGray
 import com.example.aorgia.ui.theme.MediumGray
@@ -26,10 +25,10 @@ fun MainTextField(
         onValueChange = { inputText.value = it },
         modifier = modifier
             .fillMaxWidth(ComponentWidth.MainWidth85f.width)
-            .height(ComponentHeight.MainHeight55Dp.height),
+            .height(60.dp),
         enabled = true,
         singleLine = true,
-        shape =  RoundedCornerShape(4.dp),
+        shape =  RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.textFieldColors(
             textColor = LightDirtyGray,
             containerColor = MediumGray,

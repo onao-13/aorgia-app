@@ -38,6 +38,30 @@ fun LoginForm(
 }
 
 @Composable
+fun RegistrationForm(
+    password: MutableState<String>,
+    email: MutableState<String>,
+    modifier: Modifier
+) {
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxWidth(ComponentWidth.MainWidth85f.width),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AuthLabelAndForm(email, "Почта")
+            AuthLabelAndForm(password, "Пароль")
+        }
+    }
+}
+
+@Composable
 private fun AuthLabelAndForm(
     inputText: MutableState<String>,
     label: String

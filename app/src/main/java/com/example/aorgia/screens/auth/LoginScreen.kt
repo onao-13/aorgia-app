@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +25,10 @@ import com.example.aorgia.ui.theme.AorgiaTheme
 fun LoginScreen(navController: NavController) {
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("")}
+
+    val valid = remember(username.value, password.value) {
+        username.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
+    }
 
     ConstraintLayout(
         Modifier
@@ -62,11 +65,13 @@ fun LoginScreen(navController: NavController) {
                 .wrapContentWidth(CenterHorizontally)
                 .constrainAs(loginButton) {
                     bottom.linkTo(registrationButton.top, margin = 30.dp)
-                }
+                },
+            enabled = valid
         )
+
         MainButton(
             onClick = {
-                      /*TODO*/
+                navController.navigate(Screen.Registration.route)
             },
             title = "Зарегестрироваться",
             modifier = Modifier
