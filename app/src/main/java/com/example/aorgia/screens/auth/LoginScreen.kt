@@ -1,34 +1,44 @@
 package com.example.aorgia.screens.auth
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.aorgia.app.Screen
+import com.example.aorgia.api.model.AuthViewModel
+import com.example.aorgia.app.navigation.Screen
+import com.example.aorgia.components.ErrorSnackbar
 import com.example.aorgia.components.MainButton
 import com.example.aorgia.components.MainTitle
 import com.example.aorgia.components.forms.LoginForm
-import com.example.aorgia.ui.theme.AorgiaTheme
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    val username = remember { mutableStateOf("") }
+fun LoginScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    isUserNotFound: MutableState<Boolean> = mutableStateOf(false)
+) {
+    val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("")}
 
-    val valid = remember(username.value, password.value) {
-        username.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
+    val valid = remember(email.value, password.value) {
+        email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
+            .and(password.value.length >= 8)
     }
+
+    val showLoadingIndicator = remember { mutableStateOf(false) }
 
     ConstraintLayout(
         Modifier
@@ -47,7 +57,7 @@ fun LoginScreen(navController: NavController) {
         )
 
         LoginForm(
-            username, password,
+            email, password,
             Modifier
                 .fillMaxWidth()
                 .constrainAs(form) {
@@ -57,7 +67,7 @@ fun LoginScreen(navController: NavController) {
 
         MainButton(
             onClick = {
-                navController.navigate(Screen.Home.route)
+                showLoadingIndicator.value = true
             },
             title = "Войти",
             modifier = Modifier
@@ -81,13 +91,21 @@ fun LoginScreen(navController: NavController) {
                     bottom.linkTo(parent.bottom, margin = 50.dp)
                 }
         )
-    }
-}
 
-@Preview
-@Composable
-private fun Preview() {
-    AorgiaTheme {
-        LoginScreen(navController = rememberNavController())
+        if (isUserNotFound.value) {
+            ErrorSnackbar(
+                "Возможно, ты неправильно ввел \n" +
+                        "почту или пароль",
+            ) {
+                isUserNotFound.value = false
+            }
+        }
+
+        if (showLoadingIndicator.value) {
+            Box(Modifier.fillMaxSize()) {
+                CircularProgressIndicator(Modifier.align(Center))
+            }
+            authViewModel.login(email, password)
+        }
     }
 }

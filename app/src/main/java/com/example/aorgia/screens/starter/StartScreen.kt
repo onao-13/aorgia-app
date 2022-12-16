@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.aorgia.app.Screen
+import com.example.aorgia.app.navigation.Screen
 import com.example.aorgia.components.MainButton
 import com.example.aorgia.components.MainTitle
 import com.example.aorgia.ui.theme.AorgiaTheme

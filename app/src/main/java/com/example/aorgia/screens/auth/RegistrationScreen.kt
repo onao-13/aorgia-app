@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import com.example.aorgia.app.Screen
+import com.example.aorgia.app.navigation.Screen
 import com.example.aorgia.components.slider.Slide
 import com.example.aorgia.components.slider.Slider
 import com.example.aorgia.components.slider.SliderScreen
@@ -39,7 +39,7 @@ fun RegistrationScreen(navController: NavController) {
             }
         },
         SliderScreen {
-            Slide(it) { click ->
+            Slide(it) {
                 AddUserIcon(username.value, userIcon) {
                     navController.navigate(Screen.Home.route)
                 }
