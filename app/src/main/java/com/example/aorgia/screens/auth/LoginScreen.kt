@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -93,11 +94,14 @@ fun LoginScreen(
         )
 
         if (isUserNotFound.value) {
-            ErrorSnackbar(
-                "Возможно, ты неправильно ввел \n" +
-                        "почту или пароль",
-            ) {
-                isUserNotFound.value = false
+            Box(Modifier.fillMaxSize()) {
+                ErrorSnackbar(
+                    "Возможно, ты неправильно ввел \n" +
+                            "почту или пароль",
+                    Modifier.align(BottomCenter)
+                ) {
+                    isUserNotFound.value = false
+                }
             }
         }
 

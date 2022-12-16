@@ -1,6 +1,7 @@
 package com.example.aorgia.screens.auth.slidescreens
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -28,6 +29,7 @@ import com.example.aorgia.ui.theme.LightDirtyGray
 fun AddUserIcon(
     username: String,
     userIcon: MutableState<Bitmap?>,
+    imageUri: MutableState<Uri?>,
     onClick: () -> Unit
 ) {
     ConstraintLayout(Modifier.fillMaxSize()) {
@@ -42,7 +44,7 @@ fun AddUserIcon(
                 }
         ) {
             if (userIcon.value == null) {
-                PickImage(userIcon) {
+                PickImage(userIcon, imageUri) {
                     Button(
                         onClick = it,
                         shape = CircleShape,
@@ -55,7 +57,7 @@ fun AddUserIcon(
             } else {
                 userIcon.value?.let { icon ->
                     userIcon.value = icon
-                    PickImage(userIcon) { click ->
+                    PickImage(userIcon, imageUri) { click ->
                         UserIconImage(
                             size = 250.dp,
                             userIcon = icon,
@@ -91,18 +93,5 @@ fun AddUserIcon(
             title = "Посмотреть профиль",
             enabled = username.isNotEmpty()
         )
-    }
-}
-
-@Preview(widthDp = 312, heightDp = 612, showBackground = true)
-@Composable
-private fun Preview() {
-    AorgiaTheme {
-        val userIcon =  remember {
-            mutableStateOf<Bitmap?>(null)
-        }
-        AddUserIcon(username = "nick", userIcon = userIcon) {
-
-        }
     }
 }

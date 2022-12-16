@@ -14,15 +14,16 @@ import androidx.compose.ui.platform.LocalContext
 @Composable
 fun PickImage(
     bitmap: MutableState<Bitmap?>,
+    imageUri: MutableState<Uri?>,
     button: @Composable (() -> Unit) -> Unit
 ) {
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
+//    var imageUri by remember {
+//        mutableStateOf<Uri?>(null)
+//    }
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(contract =
     ActivityResultContracts.GetContent()) { uri: Uri? ->
-        imageUri = uri
+        imageUri.value = uri
     }
     Column {
         button {
@@ -31,7 +32,7 @@ fun PickImage(
             )
         }
 
-        imageUri?.let {
+        imageUri.value?.let {
             if (Build.VERSION.SDK_INT < 28) {
                 bitmap.value = MediaStore.Images
                     .Media.getBitmap(context.contentResolver,it)

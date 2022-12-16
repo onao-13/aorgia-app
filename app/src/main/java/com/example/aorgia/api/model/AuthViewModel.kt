@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aorgia.api.repository.AuthRepository
+import com.example.aorgia.api.response.StatusCodeApi
+import com.example.aorgia.api.response.StatusCodeApi.*
 import com.example.aorgia.data.AuthUser
 import com.example.aorgia.data.User
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,13 +23,39 @@ class AuthViewModel @Inject constructor(private val repository: AuthRepository) 
             val response = repository.login(AuthUser(email.value, password.value))
             val code = response.code()
 
-            if (code == 200) {
+            if (code == SUCCESS.code) {
                 isSuccessfulLogin.value = true
-            } else if (code == 404) {
+            } else if (code == NOT_FOUND.code) {
                 isUserNotFound.value = true
             }
         }
     }
 
-    fun registration(user: User) = viewModelScope.launch {  }
+    val isSuccessfulRegistration = mutableStateOf(false)
+    val isUserExists = mutableStateOf(false)
+
+    fun registration(
+        email: MutableState<String>,
+        password: MutableState<String>,
+        username: MutableState<String>,
+        linkToIcon: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = repository.registration(
+                User(
+                    email.value,
+                    password.value,
+                    username.value,
+                    linkToIcon
+                )
+            )
+            val code = response.code()
+
+            if (code == SUCCESS.code) {
+                isSuccessfulRegistration.value = true
+            } else if (code == NOT_FOUND.code) {
+                isUserExists.value = true
+            }
+        }
+    }
 }

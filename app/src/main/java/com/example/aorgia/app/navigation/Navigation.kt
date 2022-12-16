@@ -38,7 +38,24 @@ fun AppNavigation(
                 LoginScreen(navController, authViewModel)
             }
         }
-        composable(Screen.Registration.route) { RegistrationScreen(navController) }
+        composable(Screen.Registration.route) {
+            val isUserExists = remember { mutableStateOf(true) }
+
+            if (authViewModel.isSuccessfulRegistration.value) {
+                LaunchedEffect(key1 = Unit) {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            } else if (authViewModel.isUserExists.value) {
+                RegistrationScreen(authViewModel, isUserExists)
+            } else {
+                RegistrationScreen(authViewModel)
+            }
+            RegistrationScreen(authViewModel)
+        }
         //main
         composable(Screen.Home.route) { HomeScreen() }
     }
