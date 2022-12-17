@@ -21,7 +21,7 @@ fun AddUserInfo(
     onClick: () -> Unit
 ) {
    val valid = remember(password.value, email.value) {
-       password.value.trim().isNotEmpty() && email.value.trim().isNotEmpty()
+       password.value.trim().isNotEmpty().and(password.value.length >= 8) && email.value.trim().isNotEmpty()
    }
 
     ConstraintLayout(Modifier.fillMaxSize()) {

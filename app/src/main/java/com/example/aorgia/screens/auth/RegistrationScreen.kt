@@ -17,6 +17,7 @@ import com.example.aorgia.components.ErrorSnackbar
 import com.example.aorgia.components.slider.Slide
 import com.example.aorgia.components.slider.Slider
 import com.example.aorgia.components.slider.SliderScreen
+import com.example.aorgia.database.model.ProfileDbViewModel
 import com.example.aorgia.screens.auth.slidescreens.AddUserIcon
 import com.example.aorgia.screens.auth.slidescreens.AddUsername
 import com.example.aorgia.screens.auth.slidescreens.AddUserInfo
@@ -24,7 +25,8 @@ import com.example.aorgia.screens.auth.slidescreens.AddUserInfo
 @Composable
 fun RegistrationScreen(
     authApiViewModel: AuthApiViewModel,
-    isUserExists: MutableState<Boolean> = mutableStateOf(false)
+    isUserExists: MutableState<Boolean> = mutableStateOf(false),
+    profileDbViewModel: ProfileDbViewModel
 ) {
     val password = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -48,7 +50,7 @@ fun RegistrationScreen(
         SliderScreen {
             Slide(it) {
                 AddUserIcon(username.value, userIcon, imageUri) {
-                    authApiViewModel.createAccount(imageUri, email, password, username)
+                    authApiViewModel.createAccount(imageUri, email, password, username, profileDbViewModel)
                 }
             }
         }
@@ -64,12 +66,9 @@ fun RegistrationScreen(
     if (isUserExists.value) {
         Box(Modifier.fillMaxSize()) {
             ErrorSnackbar(
-                "Пользователь с такой почтой \n" +
-                        "существует",
+                "Пользователь с такой почтой \n существует",
                 Modifier.align(Alignment.BottomCenter)
-            ) {
-                isUserExists.value = false
-            }
+            )
         }
     }
 }

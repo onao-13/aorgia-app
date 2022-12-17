@@ -31,7 +31,7 @@ fun LoginForm(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AuthLabelAndForm(username, "Никнейм")
+            AuthLabelAndForm(username, "Почта")
             AuthLabelAndForm(password, "Пароль")
         }
     }

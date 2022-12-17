@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aorgia.data.User
 import com.example.aorgia.database.repository.ProfileRepository
+import com.example.aorgia.database.table.UserDb
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +25,10 @@ class ProfileDbViewModel @Inject constructor(private val repository: ProfileRepo
             repository.getProfile().distinctUntilChanged()
                 .collect { profile ->
                     if (profile == null) _profile.value = User("", "", "", "")
-                    else _profile.value = profile
+                    else _profile.value = User(
+                        profile.email, profile.password,
+                        profile.username, profile.linkToIcon
+                    )
                 }
         }
     }
@@ -37,11 +41,11 @@ class ProfileDbViewModel @Inject constructor(private val repository: ProfileRepo
         linkToIcon: String
     ) = viewModelScope.launch {
         repository.login(
-            User(
+            UserDb(
                 email.value, password.value, username.value, linkToIcon
             )
         )
     }
-    fun update(user: User) = viewModelScope.launch { repository.update(user) }
-    fun logout(user: User) = viewModelScope.launch { repository.logout(user) }
+    fun update(user: UserDb) = viewModelScope.launch { repository.update(user) }
+    fun logout(user: UserDb) = viewModelScope.launch { repository.logout(user) }
 }

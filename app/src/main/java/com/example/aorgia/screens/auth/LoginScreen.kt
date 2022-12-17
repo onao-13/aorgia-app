@@ -1,5 +1,6 @@
 package com.example.aorgia.screens.auth
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,8 +29,9 @@ import com.example.aorgia.components.forms.LoginForm
 @Composable
 fun LoginScreen(
     navController: NavController,
-    authApiViewModel: AuthApiViewModel,
-    isUserNotFound: MutableState<Boolean> = mutableStateOf(false)
+    login: (email: MutableState<String>, password: MutableState<String>) -> Unit,
+    isUserNotFound: MutableState<Boolean> = mutableStateOf(false),
+    loading: MutableState<Boolean> = mutableStateOf(false)
 ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("")}
@@ -38,8 +40,6 @@ fun LoginScreen(
         email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
             .and(password.value.length >= 8)
     }
-
-    val showLoadingIndicator = remember { mutableStateOf(false) }
 
     ConstraintLayout(
         Modifier
@@ -68,7 +68,7 @@ fun LoginScreen(
 
         MainButton(
             onClick = {
-                showLoadingIndicator.value = true
+                login(email, password)
             },
             title = "Войти",
             modifier = Modifier
@@ -93,23 +93,19 @@ fun LoginScreen(
                 }
         )
 
-        if (isUserNotFound.value) {
-            Box(Modifier.fillMaxSize()) {
-                ErrorSnackbar(
-                    "Возможно, ты неправильно ввел \n" +
-                            "почту или пароль",
-                    Modifier.align(BottomCenter)
-                ) {
-                    isUserNotFound.value = false
-                }
-            }
-        }
-
-        if (showLoadingIndicator.value) {
-            Box(Modifier.fillMaxSize()) {
+        Box(Modifier.fillMaxSize()) {
+            if (loading.value) {
                 CircularProgressIndicator(Modifier.align(Center))
             }
-            authApiViewModel.login(email, password)
+            if (isUserNotFound.value) {
+                ErrorSnackbar(
+                    "Возможно, ты неправильно ввел почту или пароль",
+                    Modifier.align(BottomCenter),
+                    isUserNotFound
+                )
+                email.value = ""
+                password.value = ""
+            }
         }
     }
 }

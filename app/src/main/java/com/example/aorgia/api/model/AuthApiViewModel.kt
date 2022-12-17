@@ -1,6 +1,7 @@
 package com.example.aorgia.api.model
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -20,13 +21,19 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthApiViewModel @Inject constructor(
     private val repository: AuthRepository,
-    private val database: ProfileDbViewModel
+//    private val database: ProfileDbViewModel
 ) : ViewModel() {
+
+    /**
+     * Login
+     */
     val isSuccessfulLogin = mutableStateOf(false)
     val isUserNotFound = mutableStateOf(false)
+    val loading = mutableStateOf(false)
 
     fun login(email: MutableState<String>, password: MutableState<String>) {
         viewModelScope.launch(Dispatchers.IO) {
+            loading.value = true
             val response = repository.login(AuthUser(email.value, password.value))
             val code = response.code()
 
@@ -35,9 +42,14 @@ class AuthApiViewModel @Inject constructor(
             } else if (code == NOT_FOUND.code) {
                 isUserNotFound.value = true
             }
+
+            loading.value = false
         }
     }
 
+    /**
+     * Registration
+     */
     val isSuccessfulRegistration = mutableStateOf(false)
     val isUserExists = mutableStateOf(false)
 
@@ -66,11 +78,13 @@ class AuthApiViewModel @Inject constructor(
         }
     }
 
+
     fun createAccount(
         imageUri: MutableState<Uri?>,
         email: MutableState<String>,
         password: MutableState<String>,
-        username: MutableState<String>
+        username: MutableState<String>,
+        profileDbViewModel: ProfileDbViewModel
     ) {
         val ref = Firebase.storage("gs://aorgia.appspot.com")
             .reference.child("user-icon/" + UUID.randomUUID().toString())
@@ -87,7 +101,7 @@ class AuthApiViewModel @Inject constructor(
                 registration(
                     email, password, username, link
                 )
-                database.login(email, password, username, link)
+                profileDbViewModel.login(email, password, username, link)
             }
         }
     }
