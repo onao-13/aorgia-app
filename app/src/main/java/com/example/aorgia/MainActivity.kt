@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.aorgia.api.model.AuthViewModel
+import com.example.aorgia.api.model.AuthApiViewModel
 import com.example.aorgia.app.navigation.AppNavigation
 import com.example.aorgia.ui.theme.AorgiaTheme
 import com.google.firebase.FirebaseApp
@@ -19,9 +19,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             AorgiaTheme {
                 val navController = rememberNavController()
-                val authViewModel = viewModel<AuthViewModel>()
+                val authApiViewModel = viewModel<AuthApiViewModel>()
                 FirebaseApp.initializeApp(LocalContext.current)
-                AppNavigation(navController, authViewModel)
+                AppNavigation(navController, authApiViewModel)
             }
         }
     }

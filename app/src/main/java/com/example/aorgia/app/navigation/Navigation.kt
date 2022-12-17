@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.aorgia.api.model.AuthViewModel
+import com.example.aorgia.api.model.AuthApiViewModel
 import com.example.aorgia.screens.auth.LoginScreen
 import com.example.aorgia.screens.auth.RegistrationScreen
 import com.example.aorgia.screens.main.HomeScreen
@@ -16,7 +16,7 @@ import com.example.aorgia.screens.starter.StartScreen
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authApiViewModel: AuthApiViewModel
 ) {
     NavHost(navController, Screen.Start.route) {
         //auth screens
@@ -24,7 +24,7 @@ fun AppNavigation(
         composable(Screen.Login.route) {
             val isUserNotFound = remember { mutableStateOf(true) }
 
-            if (authViewModel.isSuccessfulLogin.value) {
+            if (authApiViewModel.isSuccessfulLogin.value) {
                 LaunchedEffect(key1 = Unit) {
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Home.route) {
@@ -32,16 +32,16 @@ fun AppNavigation(
                         }
                     }
                 }
-            } else if (authViewModel.isUserNotFound.value) {
-                LoginScreen(navController, authViewModel, isUserNotFound)
+            } else if (authApiViewModel.isUserNotFound.value) {
+                LoginScreen(navController, authApiViewModel, isUserNotFound)
             } else {
-                LoginScreen(navController, authViewModel)
+                LoginScreen(navController, authApiViewModel)
             }
         }
         composable(Screen.Registration.route) {
             val isUserExists = remember { mutableStateOf(true) }
 
-            if (authViewModel.isSuccessfulRegistration.value) {
+            if (authApiViewModel.isSuccessfulRegistration.value) {
                 LaunchedEffect(key1 = Unit) {
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Home.route) {
@@ -49,12 +49,12 @@ fun AppNavigation(
                         }
                     }
                 }
-            } else if (authViewModel.isUserExists.value) {
-                RegistrationScreen(authViewModel, isUserExists)
+            } else if (authApiViewModel.isUserExists.value) {
+                RegistrationScreen(authApiViewModel, isUserExists)
             } else {
-                RegistrationScreen(authViewModel)
+                RegistrationScreen(authApiViewModel)
             }
-            RegistrationScreen(authViewModel)
+            RegistrationScreen(authApiViewModel)
         }
         //main
         composable(Screen.Home.route) { HomeScreen() }

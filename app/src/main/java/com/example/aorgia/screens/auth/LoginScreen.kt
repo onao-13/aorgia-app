@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.example.aorgia.api.model.AuthViewModel
+import com.example.aorgia.api.model.AuthApiViewModel
 import com.example.aorgia.app.navigation.Screen
 import com.example.aorgia.components.ErrorSnackbar
 import com.example.aorgia.components.MainButton
@@ -28,7 +28,7 @@ import com.example.aorgia.components.forms.LoginForm
 @Composable
 fun LoginScreen(
     navController: NavController,
-    authViewModel: AuthViewModel,
+    authApiViewModel: AuthApiViewModel,
     isUserNotFound: MutableState<Boolean> = mutableStateOf(false)
 ) {
     val email = remember { mutableStateOf("") }
@@ -109,7 +109,7 @@ fun LoginScreen(
             Box(Modifier.fillMaxSize()) {
                 CircularProgressIndicator(Modifier.align(Center))
             }
-            authViewModel.login(email, password)
+            authApiViewModel.login(email, password)
         }
     }
 }
