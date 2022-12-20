@@ -19,16 +19,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.aorgia.api.model.AuthApiViewModel
 import com.example.aorgia.app.navigation.Screen
 import com.example.aorgia.components.ErrorSnackbar
 import com.example.aorgia.components.MainButton
 import com.example.aorgia.components.MainTitle
 import com.example.aorgia.components.forms.LoginForm
+import com.example.aorgia.components.modifiers.setDefaultStarterBackground
 
 @Composable
 fun LoginScreen(
-    navController: NavController,
+    navController: NavHostController,
     login: (email: MutableState<String>, password: MutableState<String>) -> Unit,
     isUserNotFound: MutableState<Boolean> = mutableStateOf(false),
     loading: MutableState<Boolean> = mutableStateOf(false)
@@ -44,7 +46,7 @@ fun LoginScreen(
     ConstraintLayout(
         Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .setDefaultStarterBackground()
     ) {
         val (text, form, loginButton, registrationButton) = createRefs()
 
