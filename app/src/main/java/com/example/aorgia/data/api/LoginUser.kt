@@ -1,6 +1,6 @@
-package com.example.aorgia.data
+package com.example.aorgia.data.api
 
-data class User(
+data class LoginUser(
     val email: String,
     val password: String,
     val username: String,

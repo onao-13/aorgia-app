@@ -1,10 +1,9 @@
 package com.example.aorgia.database.model
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.aorgia.data.User
-import com.example.aorgia.database.repository.ProfileRepository
+import com.example.aorgia.data.api.LoginUser
+import com.example.aorgia.database.repository.ProfileDbRepository
 import com.example.aorgia.database.table.UserDb
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -16,35 +15,40 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileDbViewModel @Inject constructor(private val repository: ProfileRepository): ViewModel() {
-    private val _profile = MutableStateFlow<User>(User("", "", "", ""))
-    val profile: StateFlow<User> = _profile.asStateFlow()
+class ProfileDbViewModel @Inject constructor(private val repository: ProfileDbRepository): ViewModel() {
+    private val _profile = MutableStateFlow<LoginUser>(LoginUser("", "", "", ""))
+    val profile: StateFlow<LoginUser> = _profile.asStateFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getProfile().distinctUntilChanged()
                 .collect { profile ->
-                    if (profile == null) _profile.value = User("", "", "", "")
-                    else _profile.value = User(
-                        profile.email, profile.password,
-                        profile.username, profile.linkToIcon
-                    )
+                    if (profile == null) {
+                        _profile.value = LoginUser("", "", "", "")
+                    }
+                    else {
+                        _profile.value = LoginUser(
+                            profile.email, profile.password,
+                            profile.username, profile.linkToIcon
+                        )
+
+
+                    }
                 }
         }
     }
 
     fun getProfile() = viewModelScope.launch { repository.getProfile() }
     fun login(
-        email: MutableState<String>,
-        password: MutableState<String>,
-        username: MutableState<String>,
-        linkToIcon: String
+        loginUser: LoginUser
     ) = viewModelScope.launch {
-        repository.login(
-            UserDb(
-                email.value, password.value, username.value, linkToIcon
+        if (loginUser.email.isNotEmpty()) {
+            repository.login(
+                UserDb(
+                    loginUser.email, loginUser.password, loginUser.username, loginUser.linkToIcon
+                )
             )
-        )
+        }
     }
     fun update(user: UserDb) = viewModelScope.launch { repository.update(user) }
     fun logout(user: UserDb) = viewModelScope.launch { repository.logout(user) }

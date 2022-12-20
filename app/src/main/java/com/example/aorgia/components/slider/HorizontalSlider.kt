@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
 
 @Composable
-fun Slider(
+fun HorizontalSlider(
     screens: List<SliderScreen>,
     modifier: Modifier
 ) {

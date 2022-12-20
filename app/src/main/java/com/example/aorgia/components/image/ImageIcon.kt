@@ -11,7 +11,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import coil.compose.AsyncImage
 
+/**
+ * With Bitmap
+ */
 @Composable
 fun UserIconImage(
     size: Dp,
@@ -26,5 +30,22 @@ fun UserIconImage(
             .clip(CircleShape),
         alignment = Alignment.Center,
         contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
+fun UserIconPreview(
+    size: Dp,
+    imageLink: String,
+    modifier: Modifier = Modifier
+) {
+    AsyncImage(
+        model = imageLink,
+        contentDescription = "user icon preview",
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape),
+        contentScale = ContentScale.Crop,
+        alignment = Alignment.Center
     )
 }

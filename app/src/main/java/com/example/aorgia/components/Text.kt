@@ -17,7 +17,7 @@ import com.example.aorgia.ui.theme.LightDirtyGray
 fun MainTitle(title: String, modifier: Modifier) {
     Text(
         text = title,
-        fontSize = 38.sp,
+        fontSize = 40.sp,
         fontWeight = FontWeight.SemiBold,
         color = LightDirtyGray,
         modifier = modifier

@@ -12,6 +12,9 @@ val Pink40 = Color(0xFF7D5260)
 
 //Main
 val LightRed = Color(0xFFff2c2c)
+val DarkRed = Color(0xFFac0c0c)
+val Darkness = Color(0xFF030303)
+val KittyKitty = Color(0xFF282728)
 
 //TestColors
 val MainBlack = Color(0xFF143a52)

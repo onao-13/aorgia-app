@@ -3,7 +3,6 @@ package com.example.aorgia.screens.starter
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
@@ -14,19 +13,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.aorgia.app.navigation.Screen
+import com.example.aorgia.components.modifiers.setDefaultStarterBackground
 import com.example.aorgia.database.model.ProfileDbViewModel
 import com.example.aorgia.ui.theme.LightDirtyGray
 import kotlinx.coroutines.delay
-import java.util.concurrent.TimeUnit
 
 @Composable
 fun SplashScreen(
-    navController: NavController,
+    navController: NavHostController,
     profileDbViewModel: ProfileDbViewModel
 ) {
     val scale = remember {
@@ -46,35 +45,32 @@ fun SplashScreen(
             )
         )
 
-
         if (user.email.isNotEmpty() && user.password.isNotEmpty()) {
             navController.navigate(Screen.Home.route) {
-                popUpTo(Screen.Home.route) {
+                popUpTo(Screen.Splash.route) {
                     inclusive = true
                 }
             }
         } else {
             navController.navigate(Screen.Start.route) {
-                popUpTo(Screen.Start.route) {
+                popUpTo(Screen.Splash.route) {
                     inclusive = true
                 }
             }
         }
-
-        delay(3000)
     }
 
     Box(
         Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .setDefaultStarterBackground()
     ) {
         Text(
             text = "Аогия",
             modifier = Modifier
                 .align(Alignment.Center)
                 .scale(scale.value),
-            fontSize = 30.sp,
+            fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             color = LightDirtyGray
         )

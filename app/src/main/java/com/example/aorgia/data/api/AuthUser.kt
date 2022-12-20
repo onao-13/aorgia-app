@@ -1,4 +1,4 @@
-package com.example.aorgia.data
+package com.example.aorgia.data.api
 
 data class AuthUser(
     val email: String,

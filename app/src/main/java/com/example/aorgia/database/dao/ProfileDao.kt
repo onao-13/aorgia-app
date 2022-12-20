@@ -1,7 +1,6 @@
 package com.example.aorgia.database.dao
 
 import androidx.room.*
-import com.example.aorgia.data.User
 import com.example.aorgia.database.table.UserDb
 import kotlinx.coroutines.flow.Flow
 

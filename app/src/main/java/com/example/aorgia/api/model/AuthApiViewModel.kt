@@ -1,15 +1,14 @@
 package com.example.aorgia.api.model
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.aorgia.api.repository.AuthRepository
+import com.example.aorgia.api.repository.AuthApiRepository
 import com.example.aorgia.api.response.StatusCodeApi.*
-import com.example.aorgia.data.AuthUser
-import com.example.aorgia.data.User
+import com.example.aorgia.data.api.AuthUser
+import com.example.aorgia.data.api.LoginUser
 import com.example.aorgia.database.model.ProfileDbViewModel
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -20,10 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthApiViewModel @Inject constructor(
-    private val repository: AuthRepository,
-//    private val database: ProfileDbViewModel
+    private val repository: AuthApiRepository
 ) : ViewModel() {
-
     /**
      * Login
      */
@@ -31,14 +28,23 @@ class AuthApiViewModel @Inject constructor(
     val isUserNotFound = mutableStateOf(false)
     val loading = mutableStateOf(false)
 
-    fun login(email: MutableState<String>, password: MutableState<String>) {
+    val loginUser = mutableStateOf(AuthUser("", ""))
+
+    fun login(
+        email: MutableState<String>,
+        password: MutableState<String>
+    ) {
+        val user = AuthUser(email.value, password.value)
+        loginUser.value = user
+
         viewModelScope.launch(Dispatchers.IO) {
             loading.value = true
-            val response = repository.login(AuthUser(email.value, password.value))
+            val response = repository.login(user)
             val code = response.code()
 
             if (code == SUCCESS.code) {
                 isSuccessfulLogin.value = true
+
             } else if (code == NOT_FOUND.code) {
                 isUserNotFound.value = true
             }
@@ -61,7 +67,7 @@ class AuthApiViewModel @Inject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = repository.registration(
-                User(
+                LoginUser(
                     email.value,
                     password.value,
                     username.value,
@@ -97,11 +103,11 @@ class AuthApiViewModel @Inject constructor(
             ref.downloadUrl
         }.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val link = "https://firebasestorage.googleapis.com${task.result.path.toString()}"
+                val link = task.result.toString()
                 registration(
                     email, password, username, link
                 )
-                profileDbViewModel.login(email, password, username, link)
+                profileDbViewModel.login(LoginUser(email.value, password.value, username.value, link))
             }
         }
     }

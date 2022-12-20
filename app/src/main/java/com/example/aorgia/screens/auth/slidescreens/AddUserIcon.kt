@@ -91,7 +91,7 @@ fun AddUserIcon(
                     bottom.linkTo(parent.bottom, margin = 30.dp)
                 },
             title = "Посмотреть профиль",
-            enabled = username.isNotEmpty()
+            enabled = userIcon.value != null
         )
     }
 }

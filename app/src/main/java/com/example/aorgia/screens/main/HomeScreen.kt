@@ -3,9 +3,7 @@ package com.example.aorgia.screens.main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,43 +19,59 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.aorgia.components.BottomNavigationPanel
+import com.example.aorgia.data.local.LocalUserInfo
 import com.example.aorgia.ui.theme.AorgiaTheme
 import com.example.aorgia.ui.theme.LightRed
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navController: NavHostController,
+    userInfo: LocalUserInfo
+) {
     val money = remember { mutableStateOf(0L) }
 
-    ConstraintLayout(
-        Modifier
-            .fillMaxSize()
-            .background(Color.Black)
+    Scaffold(
+        bottomBar = {
+            BottomNavigationPanel(navController, userInfo)
+        }
     ) {
-        val (moneyCounter, button) = createRefs()
-
-        Text(
-            text = money.value.toString(),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.White,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(Alignment.CenterHorizontally)
-                .constrainAs(moneyCounter) {
-                    top.linkTo(parent.top, margin = 60.dp)
-                }
-        )
-
-        PraySidzu(
+        ConstraintLayout(
             Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .wrapContentWidth(CenterHorizontally)
-                .wrapContentHeight(CenterVertically)
+                .padding(it)
+                .fillMaxSize()
+                .background(Color.Black)
         ) {
-            money.value += 10L
+            val (moneyCounter, button) = createRefs()
+
+            Text(
+                text = money.value.toString(),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+                    .constrainAs(moneyCounter) {
+                        top.linkTo(parent.top, margin = 60.dp)
+                    }
+            )
+
+            PraySidzu(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .wrapContentWidth(CenterHorizontally)
+                    .wrapContentHeight(CenterVertically)
+            ) {
+                money.value += 10L
+            }
         }
     }
+
 }
 
 @Composable
@@ -80,13 +94,5 @@ fun PraySidzu(
             fontSize = 24.sp,
             textAlign = TextAlign.Center
         )
-    }
-}
-
-@Preview
-@Composable
-fun Preview() {
-    AorgiaTheme {
-        HomeScreen()
     }
 }

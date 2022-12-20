@@ -13,10 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aorgia.components.values.ComponentHeight
 import com.example.aorgia.components.values.ComponentWidth
-import com.example.aorgia.ui.theme.DisableButtonColor
-import com.example.aorgia.ui.theme.DisableButtonTextColor
-import com.example.aorgia.ui.theme.LightDirtyGray
-import com.example.aorgia.ui.theme.LightRed
+import com.example.aorgia.ui.theme.*
 
 @Composable
         /**
@@ -34,7 +31,7 @@ fun MainButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = LightRed,
+            containerColor = DarkRed,
             contentColor = LightDirtyGray,
             disabledContainerColor = DisableButtonColor,
             disabledContentColor = DisableButtonTextColor

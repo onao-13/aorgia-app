@@ -3,6 +3,7 @@ package com.example.aorgia.app.di
 import android.content.Context
 import androidx.room.Room
 import com.example.aorgia.api.AuthApi
+import com.example.aorgia.api.ProfileApi
 import com.example.aorgia.app.network.Server
 import com.example.aorgia.database.ProfileDatabase
 import com.example.aorgia.database.dao.ProfileDao
@@ -19,16 +20,23 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object Modules {
 
-    //Api
     @Singleton
     @Provides
-    fun AuthApi(): AuthApi {
+    fun Retrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(Server.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(AuthApi::class.java)
     }
+
+    //Api
+    @Singleton
+    @Provides
+    fun AuthApi(): AuthApi = Retrofit().create(AuthApi::class.java)
+
+    @Singleton
+    @Provides
+    fun ProfileApi(): ProfileApi = Retrofit().create(ProfileApi::class.java)
 
     //Database
     @Singleton
@@ -46,4 +54,5 @@ object Modules {
         )
         .fallbackToDestructiveMigration()
         .build()
+
 }
