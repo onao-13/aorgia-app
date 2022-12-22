@@ -2,8 +2,10 @@ package com.example.aorgia.screens.auth
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -23,9 +25,16 @@ import com.example.aorgia.screens.auth.slidescreens.AddUserInfo
 
 @Composable
 fun RegistrationScreen(
-    authApiViewModel: AuthApiViewModel,
+    registration: (
+        email: MutableState<String>,
+        password: MutableState<String>,
+        username: MutableState<String>,
+        userIcon: MutableState<Uri?>,
+        profileDbViewModel: ProfileDbViewModel
+    ) -> Unit,
+    profileDbViewModel: ProfileDbViewModel,
     isUserExists: MutableState<Boolean> = mutableStateOf(false),
-    profileDbViewModel: ProfileDbViewModel
+    loading: MutableState<Boolean> = mutableStateOf(false)
 ) {
     val password = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -48,8 +57,8 @@ fun RegistrationScreen(
         },
         SliderScreen {
             Slide(it) {
-                AddUserIcon(username.value, userIcon, imageUri) {
-                    authApiViewModel.createAccount(imageUri, email, password, username, profileDbViewModel)
+                AddUserIcon(username.value, userIcon, imageUri, loading, isUserExists) {
+                    registration(email, password, username, imageUri, profileDbViewModel)
                 }
             }
         }
@@ -61,13 +70,4 @@ fun RegistrationScreen(
             .fillMaxSize()
             .setDefaultStarterBackground()
     )
-
-    if (isUserExists.value) {
-        Box(Modifier.fillMaxSize()) {
-            ErrorSnackbar(
-                "Пользователь с такой почтой \n существует",
-                Modifier.align(Alignment.BottomCenter)
-            )
-        }
-    }
 }

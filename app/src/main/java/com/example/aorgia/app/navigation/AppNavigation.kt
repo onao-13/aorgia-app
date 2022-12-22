@@ -1,5 +1,6 @@
 package com.example.aorgia.app.navigation
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentScope.SlideDirection.*
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -14,13 +15,14 @@ import com.example.aorgia.database.model.ProfileDbViewModel
 import com.example.aorgia.screens.auth.LoginScreen
 import com.example.aorgia.screens.auth.RegistrationScreen
 import com.example.aorgia.screens.main.HomeScreen
+import com.example.aorgia.screens.main.MainScreen
 import com.example.aorgia.screens.main.ProfileScreen
 import com.example.aorgia.screens.starter.SplashScreen
 import com.example.aorgia.screens.starter.StartScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 
-
+//TODO: REFACTORING THIS
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavigation(
@@ -77,7 +79,7 @@ fun AppNavigation(
                 when (initialState.destination.route) {
                     Registration.route ->
                         slideIntoContainer(AnimatedContentScope.SlideDirection.Right, tween(animMs))
-                    Home.route ->
+                    Main.route ->
                         slideIntoContainer(AnimatedContentScope.SlideDirection.Right, tween(animMs))
                     else -> null
                 }
@@ -91,7 +93,7 @@ fun AppNavigation(
             }
         ) {
             val isUserNotFound = authApiViewModel.isUserNotFound
-            val loading = authApiViewModel.loading
+            val loading = authApiViewModel.loginLoading
             val loginUser = authApiViewModel.loginUser
 
             when (authApiViewModel.isSuccessfulLogin.value) {
@@ -103,7 +105,7 @@ fun AppNavigation(
                     }
 
                     if (profileApiViewModel.isSuccessful.value) {
-                        navController.navigate(Home.route) {
+                        navController.navigate(Main.route) {
                             popUpTo(Login.route) {
                                 inclusive = true
                             }
@@ -124,17 +126,18 @@ fun AppNavigation(
             route = Registration.route,
             enterTransition = {
                 when (initialState.destination.route) {
-                    Home.route ->
+                    Main.route ->
                         slideIntoContainer(AnimatedContentScope.SlideDirection.Right, tween(animMs))
                     else -> null
                 }
             }
         ) {
-            val isUserExists = remember { mutableStateOf(true) }
+            val isUserExists = authApiViewModel.isUserExist
+            val loading = authApiViewModel.registrationLoading
 
             when (authApiViewModel.isSuccessfulRegistration.value) {
                 true -> {
-                    navController.navigate(Home.route) {
+                    navController.navigate(Main.route) {
                         popUpTo(Registration.route) {
                             inclusive = true
                         }
@@ -142,49 +145,51 @@ fun AppNavigation(
                 }
                 false -> {
                     RegistrationScreen(
-                        authApiViewModel,
+                        authApiViewModel::checkEmail,
+                        profileDbViewModel,
                         isUserExists,
-                        profileDbViewModel
+                        loading
                     )
                 }
             }
         }
         //main
+        composable(Main.route) { MainScreen(navController, userData) }
         composable(
             route = Home.route,
-            enterTransition = {
-                when (initialState.destination.route) {
-                    Profile.route ->
-                        slideIntoContainer(AnimatedContentScope.SlideDirection.Right, tween(400))
-                    else -> null
-                }
-            },
-            exitTransition = {
-                when (targetState.destination.route) {
-                    Profile.route ->
-                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, tween(400))
-                    else -> null
-                }
-            }
-        ) { HomeScreen(navController, userData) }
+//            enterTransition = {
+//                when (initialState.destination.route) {
+//                    Profile.route ->
+//                        slideIntoContainer(AnimatedContentScope.SlideDirection.Right, tween(400))
+//                    else -> null
+//                }
+//            },
+//            exitTransition = {
+//                when (targetState.destination.route) {
+//                    Profile.route ->
+//                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, tween(400))
+//                    else -> null
+//                }
+//            }
+        ) { HomeScreen() }
         composable(
             route = Profile.route,
-            enterTransition = {
-                when (initialState.destination.route) {
-                    Home.route ->
-                        slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(400))
-                    else -> null
-                }
-            },
-            exitTransition = {
-                when (targetState.destination.route) {
-                    Home.route ->
-                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, tween(400))
-                    else -> null
-                }
-            }
+//            enterTransition = {
+//                when (initialState.destination.route) {
+//                    Home.route ->
+//                        slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(400))
+//                    else -> null
+//                }
+//            },
+//            exitTransition = {
+//                when (targetState.destination.route) {
+//                    Home.route ->
+//                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, tween(400))
+//                    else -> null
+//                }
+//            }
         ) {
-            ProfileScreen(navController, userData)
+            ProfileScreen(userData)
         }
     }
 }

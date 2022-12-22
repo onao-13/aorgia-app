@@ -1,5 +1,6 @@
 package com.example.aorgia.screens.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -21,43 +22,33 @@ import com.example.aorgia.ui.theme.LightDirtyGray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
-    navController: NavHostController,
-    userData: LocalUserInfo
-) {
-    Scaffold(
-        bottomBar = {
-            BottomNavigationPanel(navController, userData)
-        },
-        containerColor = Color.Black
+fun ProfileScreen(userData: LocalUserInfo) {
+    ConstraintLayout(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)
     ) {
-        ConstraintLayout(
-            Modifier
-                .padding(it)
-                .fillMaxSize()
-        ) {
 //            val (icon, button) = createRefs()
-            Column(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
 
-                UserIconPreview(
-                    size = 250.dp,
-                    imageLink = userData.icon,
-                    modifier = Modifier
-                        .padding(top = 200.dp)
-                        .fillMaxWidth()
-                        .wrapContentWidth(CenterHorizontally)
-                )
+            UserIconPreview(
+                size = 250.dp,
+                imageLink = userData.icon,
+                modifier = Modifier
+                    .padding(top = 200.dp)
+                    .fillMaxWidth()
+                    .wrapContentWidth(CenterHorizontally)
+            )
 
-                Text(
-                    text = userData.name,
-                    color = LightDirtyGray,
-                    fontSize = 30.sp,
-                    modifier = Modifier
-                        .padding(top = 30.dp)
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-            }
+            Text(
+                text = userData.name,
+                color = LightDirtyGray,
+                fontSize = 30.sp,
+                modifier = Modifier
+                    .padding(top = 30.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

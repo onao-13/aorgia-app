@@ -28,47 +28,37 @@ import com.example.aorgia.ui.theme.LightRed
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    navController: NavHostController,
-    userInfo: LocalUserInfo
-) {
+fun HomeScreen() {
     val money = remember { mutableStateOf(0L) }
 
-    Scaffold(
-        bottomBar = {
-            BottomNavigationPanel(navController, userInfo)
-        }
+    ConstraintLayout(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)
     ) {
-        ConstraintLayout(
+        val (moneyCounter, button) = createRefs()
+
+        Text(
+            text = money.value.toString(),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.White,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .constrainAs(moneyCounter) {
+                    top.linkTo(parent.top, margin = 60.dp)
+                }
+        )
+
+        PraySidzu(
             Modifier
-                .padding(it)
-                .fillMaxSize()
-                .background(Color.Black)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .wrapContentWidth(CenterHorizontally)
+                .wrapContentHeight(CenterVertically)
         ) {
-            val (moneyCounter, button) = createRefs()
-
-            Text(
-                text = money.value.toString(),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally)
-                    .constrainAs(moneyCounter) {
-                        top.linkTo(parent.top, margin = 60.dp)
-                    }
-            )
-
-            PraySidzu(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .wrapContentWidth(CenterHorizontally)
-                    .wrapContentHeight(CenterVertically)
-            ) {
-                money.value += 10L
-            }
+            money.value += 10L
         }
     }
 

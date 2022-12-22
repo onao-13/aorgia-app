@@ -1,6 +1,7 @@
 package com.example.aorgia.screens.auth
 
 import android.util.Log
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,7 +40,9 @@ fun LoginScreen(
     val password = remember { mutableStateOf("")}
 
     val valid = remember(email.value, password.value) {
-        email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
+        email.value.trimEnd().isNotEmpty()
+            .and(Patterns.EMAIL_ADDRESS.matcher(email.value).matches())
+            && password.value.trimEnd().isNotEmpty()
             .and(password.value.length >= 8)
     }
 

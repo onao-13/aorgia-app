@@ -56,7 +56,7 @@ fun AddUsername(
                 .constrainAs(buttonNext) {
                     bottom.linkTo(parent.bottom, margin = 50.dp)
                 },
-            enabled = username.value.isNotEmpty()
+            enabled = username.value.trimEnd().isNotEmpty().and(username.value.length >= 4)
         )
     }
 }

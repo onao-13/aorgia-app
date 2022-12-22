@@ -15,8 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.aorgia.api.model.AuthApiViewModel
+import com.example.aorgia.api.model.ProfileApiViewModel
+import com.example.aorgia.app.navigation.AppNavigation
 import com.example.aorgia.app.navigation.Screen
 import com.example.aorgia.components.modifiers.setDefaultStarterBackground
 import com.example.aorgia.database.model.ProfileDbViewModel
@@ -46,7 +50,7 @@ fun SplashScreen(
         )
 
         if (user.email.isNotEmpty() && user.password.isNotEmpty()) {
-            navController.navigate(Screen.Home.route) {
+            navController.navigate(Screen.Main.route) {
                 popUpTo(Screen.Splash.route) {
                     inclusive = true
                 }

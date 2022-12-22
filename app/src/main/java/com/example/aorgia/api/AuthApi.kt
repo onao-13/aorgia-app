@@ -1,6 +1,7 @@
 package com.example.aorgia.api
 
 import com.example.aorgia.data.api.AuthUser
+import com.example.aorgia.data.api.Email
 import com.example.aorgia.data.api.LoginUser
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -15,4 +16,7 @@ interface AuthApi {
 
     @POST("/api/auth/registration")
     suspend fun registration(@Body loginUser: LoginUser): Response<ResponseBody>
+
+    @POST("/api/auth/check-email")
+    suspend fun checkEmail(@Body email: Email): Response<ResponseBody>
 }

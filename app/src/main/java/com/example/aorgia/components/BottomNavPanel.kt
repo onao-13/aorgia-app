@@ -7,7 +7,6 @@ import androidx.compose.material.icons.filled.Man
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -16,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.aorgia.app.navigation.Screen
 import com.example.aorgia.components.image.UserIconPreview
@@ -35,10 +33,12 @@ private sealed class BottomNavScreens(
     object BottomProfile : BottomNavScreens(Screen.Profile.route, "", Icons.Default.Man)
 }
 
+//TODO: ADD NAVCONTROLLER AND ANIM NAVIGATION
 @Composable
 fun BottomNavigationPanel(
-    navController: NavController,
-    userData: LocalUserInfo
+    userData: LocalUserInfo,
+    selectedScreen: String,
+    changeScreen: (screen: String) -> Unit
 ) {
     val bottomScreens = listOf(
         BottomNavScreens.BottomHome,
@@ -49,8 +49,6 @@ fun BottomNavigationPanel(
         containerColor = KittyKitty,
         contentColor = LightDirtyGray
     ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
 
         bottomScreens.forEach { screen ->
             NavigationBarItem(
@@ -64,18 +62,9 @@ fun BottomNavigationPanel(
                         }
                     }
                 },
-                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                selected = selectedScreen == screen.route,
                 onClick = {
-                    navController.navigate(screen.route) {
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                inclusive = true
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
+                      changeScreen(screen.route)
                 },
                 label = {
                     when (screen.route) {
@@ -94,15 +83,4 @@ fun BottomNavigationPanel(
             )
         }
     }
-}
-
-@Composable
-private fun BottomTextTitle(title: String) {
-    Text(
-        text = title,
-        color = LightDirtyGray,
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Normal,
-        textAlign = TextAlign.Center
-    )
 }

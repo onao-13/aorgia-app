@@ -17,7 +17,7 @@ import com.example.aorgia.ui.theme.LightDirtyGray
 fun ErrorSnackbar(
     errorText: String,
     modifier: Modifier,
-    show: MutableState<Boolean> = mutableStateOf(false)
+    show: MutableState<Boolean>
 ) {
     if (show.value) {
         Snackbar(

@@ -1,6 +1,7 @@
 package com.example.aorgia.api.model
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.aorgia.api.repository.AuthApiRepository
 import com.example.aorgia.api.response.StatusCodeApi.*
 import com.example.aorgia.data.api.AuthUser
+import com.example.aorgia.data.api.Email
 import com.example.aorgia.data.api.LoginUser
 import com.example.aorgia.database.model.ProfileDbViewModel
 import com.google.firebase.ktx.Firebase
@@ -17,6 +19,7 @@ import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
+//TODO: REFACTORING THIS
 @HiltViewModel
 class AuthApiViewModel @Inject constructor(
     private val repository: AuthApiRepository
@@ -26,7 +29,7 @@ class AuthApiViewModel @Inject constructor(
      */
     val isSuccessfulLogin = mutableStateOf(false)
     val isUserNotFound = mutableStateOf(false)
-    val loading = mutableStateOf(false)
+    val loginLoading = mutableStateOf(false)
 
     val loginUser = mutableStateOf(AuthUser("", ""))
 
@@ -38,18 +41,42 @@ class AuthApiViewModel @Inject constructor(
         loginUser.value = user
 
         viewModelScope.launch(Dispatchers.IO) {
-            loading.value = true
+            loginLoading.value = true
             val response = repository.login(user)
-            val code = response.code()
 
-            if (code == SUCCESS.code) {
-                isSuccessfulLogin.value = true
-
-            } else if (code == NOT_FOUND.code) {
-                isUserNotFound.value = true
+            when (response.code()) {
+                SUCCESS.code -> isSuccessfulLogin.value = true
+                NOT_FOUND.code -> isUserNotFound.value = true
             }
 
-            loading.value = false
+            loginLoading.value = false
+        }
+    }
+
+    /**
+     * Check email
+     */
+    val registrationLoading = mutableStateOf(false)
+    val isUserExist = mutableStateOf(false)
+
+    fun checkEmail(
+        email: MutableState<String>,
+        password: MutableState<String>,
+        username: MutableState<String>,
+        imageUri: MutableState<Uri?>,
+        profileDbViewModel: ProfileDbViewModel
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            registrationLoading.value = true
+            val response = repository.checkEmail(Email(email.value))
+
+            when (response.code()) {
+                SUCCESS.code -> createAccount(email, password, username, imageUri, profileDbViewModel)
+                CONFLICT.code -> {
+                    isUserExist.value = true
+                    registrationLoading.value = false
+                }
+            }
         }
     }
 
@@ -57,7 +84,46 @@ class AuthApiViewModel @Inject constructor(
      * Registration
      */
     val isSuccessfulRegistration = mutableStateOf(false)
-    val isUserExists = mutableStateOf(false)
+
+    private fun createAccount(
+        email: MutableState<String>,
+        password: MutableState<String>,
+        username: MutableState<String>,
+        imageUri: MutableState<Uri?>,
+        profileDbViewModel: ProfileDbViewModel
+    ) {
+        val ref = Firebase.storage("gs://aorgia.appspot.com")
+            .reference.child("user-icon/" + UUID.randomUUID().toString())
+        ref.putFile(imageUri.value!!).continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            ref.downloadUrl
+        }
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val link = task.result.toString()
+
+                registration(
+                    email, password, username, link
+                )
+
+                profileDbViewModel.login(
+                    LoginUser(
+                        email.value,
+                        password.value,
+                        username.value,
+                        link
+                    )
+                )
+            }
+        }
+        .addOnFailureListener {
+            registrationLoading.value = false
+        }
+    }
 
     private fun registration(
         email: MutableState<String>,
@@ -74,41 +140,14 @@ class AuthApiViewModel @Inject constructor(
                     linkToIcon
                 )
             )
-            val code = response.code()
 
-            if (code == SUCCESS.code) {
-                isSuccessfulRegistration.value = true
-            } else if (code == NOT_FOUND.code) {
-                isUserExists.value = true
-            }
-        }
-    }
-
-
-    fun createAccount(
-        imageUri: MutableState<Uri?>,
-        email: MutableState<String>,
-        password: MutableState<String>,
-        username: MutableState<String>,
-        profileDbViewModel: ProfileDbViewModel
-    ) {
-        val ref = Firebase.storage("gs://aorgia.appspot.com")
-            .reference.child("user-icon/" + UUID.randomUUID().toString())
-        ref.putFile(imageUri.value!!).continueWithTask { task ->
-            if (!task.isSuccessful) {
-                task.exception?.let {
-                    throw it
+            when (response.code()) {
+                SUCCESS.code -> {
+                    isSuccessfulRegistration.value = true
+                    registrationLoading.value = false
                 }
             }
-            ref.downloadUrl
-        }.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val link = task.result.toString()
-                registration(
-                    email, password, username, link
-                )
-                profileDbViewModel.login(LoginUser(email.value, password.value, username.value, link))
-            }
         }
     }
+
 }

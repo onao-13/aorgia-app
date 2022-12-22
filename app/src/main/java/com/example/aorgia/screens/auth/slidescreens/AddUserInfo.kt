@@ -1,5 +1,6 @@
 package com.example.aorgia.screens.auth.slidescreens
 
+import android.util.Patterns
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -13,6 +14,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.aorgia.components.MainButton
 import com.example.aorgia.components.MainTitle
 import com.example.aorgia.components.forms.RegistrationForm
+import java.util.regex.Pattern
 
 @Composable
 fun AddUserInfo(
@@ -21,7 +23,10 @@ fun AddUserInfo(
     onClick: () -> Unit
 ) {
    val valid = remember(password.value, email.value) {
-       password.value.trim().isNotEmpty().and(password.value.length >= 8) && email.value.trim().isNotEmpty()
+       password.value.trimEnd().isNotEmpty()
+           .and(password.value.length >= 8)
+       && email.value.trimEnd().isNotEmpty()
+           .and(Patterns.EMAIL_ADDRESS.matcher(email.value).matches())
    }
 
     ConstraintLayout(Modifier.fillMaxSize()) {

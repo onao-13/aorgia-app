@@ -2,27 +2,29 @@ package com.example.aorgia.screens.auth.slidescreens
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.aorgia.components.ErrorSnackbar
 import com.example.aorgia.components.MainButton
 import com.example.aorgia.components.image.PickImage
 import com.example.aorgia.components.image.UserIconImage
-import com.example.aorgia.ui.theme.AorgiaTheme
 import com.example.aorgia.ui.theme.LightDirtyGray
 
 @Composable
@@ -30,6 +32,8 @@ fun AddUserIcon(
     username: String,
     userIcon: MutableState<Bitmap?>,
     imageUri: MutableState<Uri?>,
+    loading: MutableState<Boolean>,
+    isUserExists: MutableState<Boolean>,
     onClick: () -> Unit
 ) {
     ConstraintLayout(Modifier.fillMaxSize()) {
@@ -93,5 +97,26 @@ fun AddUserIcon(
             title = "Посмотреть профиль",
             enabled = userIcon.value != null
         )
+
+        Box(Modifier.fillMaxSize()) {
+            val loadingPos = LocalConfiguration.current.screenWidthDp.dp / 2 - 26.dp
+            if (loading.value) {
+                CircularProgressIndicator(
+                    Modifier
+                        .align(CenterEnd)
+                        .padding(
+                            end = loadingPos
+                        )
+                )
+            }
+            if (isUserExists.value) {
+                ErrorSnackbar(
+                    "Пользователь с такой почтой \n существует",
+                    Modifier
+                        .align(Alignment.BottomEnd),
+                    isUserExists
+                )
+            }
+        }
     }
 }
