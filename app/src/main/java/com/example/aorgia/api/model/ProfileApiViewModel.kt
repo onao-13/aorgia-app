@@ -26,6 +26,7 @@ class ProfileApiViewModel @Inject constructor(
     val profileData = mutableStateOf(User(0, "", "", ""))
     val loading = mutableStateOf(false)
     val isSuccessful = mutableStateOf(false)
+    val isSuccessfulUpdate = mutableStateOf(false)
     val isTagExists = mutableStateOf(false)
 
     fun getProfile(email: String) {
@@ -74,8 +75,6 @@ class ProfileApiViewModel @Inject constructor(
         link: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("send", "ok")
-
             val status = repository.updateProfile(
                 User(LocalUser.Data.id.value, username, tag, link)
             )
@@ -84,6 +83,7 @@ class ProfileApiViewModel @Inject constructor(
                 StatusCodeApi.SUCCESS.code -> {
                     loading.value = false
                     isTagExists.value = false
+                    isSuccessfulUpdate.value = true
                     LocalUser().updateUserData(
                         username, tag, link
                     )

@@ -199,12 +199,21 @@ fun AppNavigation(
                 }
             }
         ) {
-            EditProfileScreen(
-                navController,
-                profileApiViewModel,
-                profileApiViewModel.loading,
-                profileApiViewModel.isTagExists
-            )
+            when (profileApiViewModel.isSuccessfulUpdate.value) {
+                true -> {
+                    navController.navigate(Main.route) {
+                        launchSingleTop = true
+                    }
+                }
+                false -> {
+                    EditProfileScreen(
+                        navController,
+                        profileApiViewModel::updateProfile,
+                        profileApiViewModel.loading,
+                        profileApiViewModel.isTagExists
+                    )
+                }
+            }
         }
         composable(
             route = Settings.route,

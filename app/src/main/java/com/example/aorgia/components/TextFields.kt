@@ -43,7 +43,7 @@ fun MainTextField(
 @Composable
 fun EmptyShapeTextField(
     text: MutableState<String>,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     TextField(
         value = text.value,

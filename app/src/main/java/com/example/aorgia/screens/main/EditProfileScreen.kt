@@ -2,9 +2,9 @@ package com.example.aorgia.screens.main
 
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -13,23 +13,26 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.example.aorgia.api.model.ProfileApiViewModel
 import com.example.aorgia.app.navigation.Screen
-import com.example.aorgia.components.EmptyShapeTextField
-import com.example.aorgia.components.LoadingIndicatorWithErrorSnackbar
-import com.example.aorgia.components.MainButton
-import com.example.aorgia.components.MainTitle
+import com.example.aorgia.components.*
 import com.example.aorgia.components.image.UpdatedPickImageWithPreview
 import com.example.aorgia.data.local.LocalUser
+import com.example.aorgia.ui.theme.LightDirtyGray
 
 @Composable
 fun EditProfileScreen(
     navController: NavHostController,
-    profileApiViewModel: ProfileApiViewModel,
+    updateProfile: (
+        username: MutableState<String>,
+        tag: MutableState<String>,
+        uri: MutableState<Uri?>
+    ) -> Unit,
     loading: MutableState<Boolean>,
-    error: MutableState<Boolean>,
+    error: MutableState<Boolean>
 ) {
     val updatedUsername = remember { mutableStateOf(LocalUser.Data.username.value) }
     val updatedTag = remember { mutableStateOf(LocalUser.Data.tag.value) }
@@ -60,30 +63,39 @@ fun EditProfileScreen(
                 }
         )
 
-        EmptyShapeTextField(
-            updatedUsername,
-            Modifier
+        Column(
+            modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(CenterHorizontally)
                 .constrainAs(username) {
                     top.linkTo(icon.bottom, margin = 30.dp)
-                }
-        )
+                },
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            LittleText("Никнейм")
+            EmptyShapeTextField(
+                updatedUsername
+            )
+        }
 
-        EmptyShapeTextField(
-            updatedTag,
+        Column(
             Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(CenterHorizontally)
                 .constrainAs(tag) {
-                    top.linkTo(username.bottom, margin = 10.dp)
+                    top.linkTo(username.bottom, margin = 20.dp)
                 }
-        )
+        ) {
+            LittleText("Тег")
+            EmptyShapeTextField(
+                updatedTag
+            )
+        }
+
 
         MainButton(
             onClick = {
-                profileApiViewModel.updateProfile(updatedUsername, updatedTag, uri)
-                navController.navigate(Screen.Main.route)
+                updateProfile(updatedUsername, updatedTag, uri)
             },
             title = "Сохранить изменения",
             modifier = Modifier
