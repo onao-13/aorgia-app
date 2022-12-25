@@ -9,4 +9,5 @@ sealed class Screen(var route: String) {
     object Home : Screen("home")
     object Profile : Screen("profile")
     object EditProfile : Screen("edit profile")
+    object Settings : Screen("settings")
 }

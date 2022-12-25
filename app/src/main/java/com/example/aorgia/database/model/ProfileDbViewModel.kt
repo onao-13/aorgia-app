@@ -50,5 +50,10 @@ class ProfileDbViewModel @Inject constructor(private val repository: ProfileDbRe
             )
         )
     }
-    fun logout(user: UserDb) = viewModelScope.launch { repository.logout(user) }
+    fun logout(
+        email: String,
+        password: String
+    ) = viewModelScope.launch {
+        repository.logout(UserDb(email, password))
+    }
 }

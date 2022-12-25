@@ -18,6 +18,7 @@ import com.example.aorgia.screens.main.EditProfileScreen
 import com.example.aorgia.screens.main.HomeScreen
 import com.example.aorgia.screens.main.MainScreen
 import com.example.aorgia.screens.main.ProfileScreen
+import com.example.aorgia.screens.settings.SettingsScreen
 import com.example.aorgia.screens.starter.SplashScreen
 import com.example.aorgia.screens.starter.StartScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -32,7 +33,7 @@ fun AppNavigation(
     profileDbViewModel: ProfileDbViewModel,
     profileApiViewModel: ProfileApiViewModel
 ) {
-    val animMs = 3000
+    val animMs = 1200
     val user = authApiViewModel.user
     AnimatedNavHost(navController, Splash.route) {
         //splash
@@ -45,7 +46,7 @@ fun AppNavigation(
             },
             exitTransition = {
                 when(targetState.destination.route) {
-                    Home.route ->
+                    Main.route ->
                         slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
                     Start.route ->
                         slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
@@ -106,6 +107,7 @@ fun AppNavigation(
                     profileDbViewModel.login(user.value.email, user.value.password)
 
                     navController.navigate(Main.route) {
+                        launchSingleTop = true
                         popUpTo(Login.route) {
                             inclusive = true
                         }
@@ -136,12 +138,11 @@ fun AppNavigation(
 
             when (authApiViewModel.isSuccessful.value) {
                 true -> {
-                    Log.d("user", user.value.toString())
                     profileApiViewModel.getProfile(user.value.email)
-
                     LocalUser().addUserData(profileApiViewModel.profileData.value)
 
                     navController.navigate(Main.route) {
+                        launchSingleTop = true
                         popUpTo(Registration.route) {
                             inclusive = true
                         }
@@ -162,7 +163,13 @@ fun AppNavigation(
             route = Main.route,
             enterTransition = {
                 when (initialState.destination.route) {
+                    Login.route ->
+                        slideIntoContainer(AnimatedContentScope.SlideDirection.Left , tween(animMs))
+                    Registration.route ->
+                        slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
                     EditProfile.route ->
+                        slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
+                    Settings.route ->
                         slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
                     else -> null
                 }
@@ -180,14 +187,14 @@ fun AppNavigation(
             enterTransition = {
                 when (initialState.destination.route) {
                     Main.route ->
-                        slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
+                        slideIntoContainer(AnimatedContentScope.SlideDirection.Right, tween(animMs))
                     else -> null
                 }
             },
             exitTransition = {
                 when (targetState.destination.route) {
                     EditProfile.route ->
-                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, tween(animMs))
+                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
                     else -> null
                 }
             }
@@ -198,6 +205,28 @@ fun AppNavigation(
                 profileApiViewModel.loading,
                 profileApiViewModel.isTagExists
             )
+        }
+        composable(
+            route = Settings.route,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    Main.route ->
+                        slideIntoContainer(AnimatedContentScope.SlideDirection.Right, tween(animMs))
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    Settings.route ->
+                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
+                    else -> null
+                }
+            }
+        ) {
+            SettingsScreen(navController) {
+                profileDbViewModel.logout(user.value.email, user.value.password)
+                LocalUser.Data.tag.value = ""
+            }
         }
 //        composable(
 //            route = Home.route,
