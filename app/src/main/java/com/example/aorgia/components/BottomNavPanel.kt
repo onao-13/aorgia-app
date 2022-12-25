@@ -6,23 +6,14 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Man
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.aorgia.app.navigation.Screen
 import com.example.aorgia.components.image.UserIconPreview
-import com.example.aorgia.data.local.LocalUserInfo
-import com.example.aorgia.ui.theme.Darkness
+import com.example.aorgia.data.local.LocalUser
 import com.example.aorgia.ui.theme.KittyKitty
 import com.example.aorgia.ui.theme.LightDirtyGray
-import kotlinx.coroutines.launch
 
 private sealed class BottomNavScreens(
     val route: String,
@@ -36,7 +27,7 @@ private sealed class BottomNavScreens(
 //TODO: ADD NAVCONTROLLER AND ANIM NAVIGATION
 @Composable
 fun BottomNavigationPanel(
-    userData: LocalUserInfo,
+    userData: LocalUser.Data,
     selectedScreen: String,
     changeScreen: (screen: String) -> Unit
 ) {
@@ -55,7 +46,7 @@ fun BottomNavigationPanel(
                 icon = {
                     when (screen.route) {
                         Screen.Profile.route -> {
-                            UserIconPreview(size = 24.dp, imageLink = userData.icon)
+                            UserIconPreview(size = 24.dp, imageLink = userData.icon.value)
                         }
                         else -> {
                             Image(imageVector = screen.icon, contentDescription = "icon")
@@ -69,7 +60,7 @@ fun BottomNavigationPanel(
                 label = {
                     when (screen.route) {
                         Screen.Profile.route -> {
-                            Text(text = userData.name)
+                            Text(text = userData.tag.value)
                         } else -> {
                             Text(text = screen.title)
                         }

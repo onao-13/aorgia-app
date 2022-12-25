@@ -10,11 +10,8 @@ interface ProfileDao {
     @Query("SELECT * FROM profiles LIMIT 1")
     fun getProfile(): Flow<UserDb>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun saveProfile(user: UserDb)
-
-    @Update
-    suspend fun updateProfile(user: UserDb)
 
     @Delete
     suspend fun logout(user: UserDb)

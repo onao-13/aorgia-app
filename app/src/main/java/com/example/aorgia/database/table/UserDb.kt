@@ -10,11 +10,6 @@ data class UserDb(
     val email: String,
     @ColumnInfo(name = "password")
     val password: String,
-    @ColumnInfo(name = "username")
-    val username: String,
-    @ColumnInfo(name = "linkToIcon")
-    val linkToIcon: String,
     @PrimaryKey
     val id: Int = 0
-//    val token: String
 )

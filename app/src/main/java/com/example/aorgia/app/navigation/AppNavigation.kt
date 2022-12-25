@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import com.example.aorgia.api.model.AuthApiViewModel
 import com.example.aorgia.api.model.ProfileApiViewModel
 import com.example.aorgia.app.navigation.Screen.*
-import com.example.aorgia.data.local.LocalUserInfo
+import com.example.aorgia.data.local.LocalUser
 import com.example.aorgia.database.model.ProfileDbViewModel
 import com.example.aorgia.screens.auth.LoginScreen
 import com.example.aorgia.screens.auth.RegistrationScreen
@@ -32,8 +32,7 @@ fun AppNavigation(
     profileApiViewModel: ProfileApiViewModel
 ) {
     val animMs = 3000
-    val user = profileDbViewModel.profile.collectAsState().value
-    val userData = LocalUserInfo(user.username, user.linkToIcon)
+    val user = authApiViewModel.user
     AnimatedNavHost(navController, Splash.route) {
         //splash
         composable(
@@ -53,7 +52,11 @@ fun AppNavigation(
                 }
             }
         ) {
-            SplashScreen(navController, profileDbViewModel)
+            SplashScreen(
+                navController,
+                profileDbViewModel.profile.collectAsState().value,
+                profileApiViewModel
+            )
         }
         composable(
             route = Start.route,
@@ -93,22 +96,17 @@ fun AppNavigation(
             }
         ) {
             val isUserNotFound = authApiViewModel.isUserNotFound
-            val loading = authApiViewModel.loginLoading
-            val loginUser = authApiViewModel.loginUser
+            val loading = authApiViewModel.loading
 
-            when (authApiViewModel.isSuccessfulLogin.value) {
+            when (authApiViewModel.isSuccessful.value) {
                 true -> {
-                    profileApiViewModel.getProfile(loginUser.value.email)
+                    profileApiViewModel.getProfile(user.value.email)
+                    LocalUser().addUserData(profileApiViewModel.profileData.value)
+                    profileDbViewModel.login(user.value.email, user.value.password)
 
-                    if (!profileApiViewModel.loading.value) {
-                        profileDbViewModel.login(profileApiViewModel.profileData.value)
-                    }
-
-                    if (profileApiViewModel.isSuccessful.value) {
-                        navController.navigate(Main.route) {
-                            popUpTo(Login.route) {
-                                inclusive = true
-                            }
+                    navController.navigate(Main.route) {
+                        popUpTo(Login.route) {
+                            inclusive = true
                         }
                     }
                 }
@@ -133,10 +131,15 @@ fun AppNavigation(
             }
         ) {
             val isUserExists = authApiViewModel.isUserExist
-            val loading = authApiViewModel.registrationLoading
+            val loading = authApiViewModel.loading
 
-            when (authApiViewModel.isSuccessfulRegistration.value) {
+            when (authApiViewModel.isSuccessful.value) {
                 true -> {
+                    Log.d("user", user.value.toString())
+                    profileApiViewModel.getProfile(user.value.email)
+
+                    LocalUser().addUserData(profileApiViewModel.profileData.value)
+
                     navController.navigate(Main.route) {
                         popUpTo(Registration.route) {
                             inclusive = true
@@ -154,7 +157,7 @@ fun AppNavigation(
             }
         }
         //main
-        composable(Main.route) { MainScreen(navController, userData) }
+        composable(Main.route) { MainScreen(navController, LocalUser.Data) }
         composable(
             route = Home.route,
 //            enterTransition = {
@@ -189,7 +192,7 @@ fun AppNavigation(
 //                }
 //            }
         ) {
-            ProfileScreen(userData)
+            ProfileScreen(LocalUser.Data)
         }
     }
 }

@@ -14,10 +14,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.aorgia.components.MainButton
 import com.example.aorgia.components.MainTitle
 import com.example.aorgia.components.forms.RegistrationForm
-import java.util.regex.Pattern
 
 @Composable
-fun AddUserInfo(
+fun AddAccountInfo(
     password: MutableState<String>,
     email: MutableState<String>,
     onClick: () -> Unit

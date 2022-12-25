@@ -6,4 +6,5 @@ import com.google.firebase.storage.ktx.storage
 
 object BucketStorage {
     val firebaseRef = Firebase.storage("gs://aorgia.appspot.com").reference
+    val childUserIcons = "user-icon/"
 }

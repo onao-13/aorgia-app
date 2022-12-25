@@ -2,26 +2,20 @@ package com.example.aorgia.screens.auth
 
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.aorgia.api.model.AuthApiViewModel
-import com.example.aorgia.components.ErrorSnackbar
 import com.example.aorgia.components.modifiers.setDefaultStarterBackground
 import com.example.aorgia.components.slider.Slide
 import com.example.aorgia.components.slider.HorizontalSlider
 import com.example.aorgia.components.slider.SliderScreen
 import com.example.aorgia.database.model.ProfileDbViewModel
 import com.example.aorgia.screens.auth.slidescreens.AddUserIcon
-import com.example.aorgia.screens.auth.slidescreens.AddUsername
-import com.example.aorgia.screens.auth.slidescreens.AddUserInfo
+import com.example.aorgia.screens.auth.slidescreens.AddProfileInfo
+import com.example.aorgia.screens.auth.slidescreens.AddAccountInfo
 
 @Composable
 fun RegistrationScreen(
@@ -30,6 +24,7 @@ fun RegistrationScreen(
         password: MutableState<String>,
         username: MutableState<String>,
         userIcon: MutableState<Uri?>,
+        tag: MutableState<String>,
         profileDbViewModel: ProfileDbViewModel
     ) -> Unit,
     profileDbViewModel: ProfileDbViewModel,
@@ -42,23 +37,24 @@ fun RegistrationScreen(
     val userIcon =  remember {
         mutableStateOf<Bitmap?>(null)
     }
+    val tag = remember { mutableStateOf("") }
     val imageUri = remember { mutableStateOf<Uri?>(null) }
 
     val sliderScreens = listOf<SliderScreen>(
         SliderScreen {
             Slide(it) { click ->
-                AddUserInfo(password, email, click)
+                AddAccountInfo(password, email, click)
             }
         },
         SliderScreen {
             Slide(it) { click ->
-                AddUsername(username, click)
+                AddProfileInfo(username, tag, click)
             }
         },
         SliderScreen {
             Slide(it) {
                 AddUserIcon(username.value, userIcon, imageUri, loading, isUserExists) {
-                    registration(email, password, username, imageUri, profileDbViewModel)
+                    registration(email, password, username, imageUri, tag, profileDbViewModel)
                 }
             }
         }

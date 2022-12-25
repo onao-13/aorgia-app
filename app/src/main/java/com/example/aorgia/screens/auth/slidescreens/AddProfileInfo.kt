@@ -1,6 +1,7 @@
 package com.example.aorgia.screens.auth.slidescreens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -14,17 +15,25 @@ import com.example.aorgia.components.MainButton
 import com.example.aorgia.components.MainTextField
 import com.example.aorgia.components.MainTitle
 import com.example.aorgia.ui.theme.AorgiaTheme
+import com.example.aorgia.ui.theme.LightDirtyGray
 
 @Composable
-fun AddUsername(
+fun AddProfileInfo(
     username: MutableState<String>,
+    tag: MutableState<String>,
     onClick: () -> Unit
 ) {
+    val valid = remember(username.value, tag.value) {
+        username.value.trimEnd().isNotEmpty().and(username.value.length >= 4)
+                && tag.value.trimEnd().isNotEmpty().and(tag.value.length >= 4)
+    }
+
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (text, field, buttonNext) = createRefs()
 
         MainTitle(
-            "Придумай себе никнейм",
+            "Придумай себе никнейм" +
+                    "и уникальный тег",
             Modifier
                 .fillMaxWidth()
                 .constrainAs(text) {
@@ -32,19 +41,23 @@ fun AddUsername(
                 }
         )
 
-        Box(
-            Modifier
+        Column(
+            modifier = Modifier
                 .padding(20.dp)
                 .fillMaxWidth()
                 .constrainAs(field) {
                     top.linkTo(text.bottom, margin = 150.dp)
-                }
+                },
+            verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
-            MainTextField(
-                inputText = username,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+            Column(Modifier.fillMaxWidth()) {
+                Text(text = "Никнейм", color = LightDirtyGray)
+                MainTextField(username, Modifier.fillMaxWidth())
+            }
+            Column(Modifier.fillMaxWidth()) {
+                Text(text = "Тег", color = LightDirtyGray)
+                MainTextField(tag, Modifier.fillMaxWidth())
+            }
         }
 
         MainButton(
@@ -56,18 +69,7 @@ fun AddUsername(
                 .constrainAs(buttonNext) {
                     bottom.linkTo(parent.bottom, margin = 50.dp)
                 },
-            enabled = username.value.trimEnd().isNotEmpty().and(username.value.length >= 4)
+            enabled = valid
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun Preview() {
-    AorgiaTheme {
-        val username = remember { mutableStateOf("") }
-        AddUsername(username) {
-
-        }
     }
 }

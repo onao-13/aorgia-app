@@ -1,6 +1,5 @@
 package com.example.aorgia.screens.main
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,20 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.example.aorgia.app.navigation.Screen
 import com.example.aorgia.components.BottomNavigationPanel
-import com.example.aorgia.data.local.LocalUserInfo
+import com.example.aorgia.data.local.LocalUser
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    userData: LocalUserInfo
+    userData: LocalUser.Data
 ) {
     val selectedScreen = remember { mutableStateOf(Screen.Home.route) }
     Scaffold(
         bottomBar = {
             BottomNavigationPanel(userData, selectedScreen.value) { screen ->
                 selectedScreen.value = screen
-                Log.d("nav", screen)
             }
         }
     ) {

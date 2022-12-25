@@ -7,6 +7,5 @@ import javax.inject.Inject
 class ProfileDbRepository @Inject constructor(private val dao: ProfileDao) {
     fun getProfile() = dao.getProfile()
     suspend fun login(user: UserDb) = dao.saveProfile(user)
-    suspend fun update(user: UserDb) = dao.updateProfile(user)
     suspend fun logout(user: UserDb) = dao.logout(user)
 }
