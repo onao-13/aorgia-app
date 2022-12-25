@@ -30,3 +30,17 @@ fun MainTitle(title: String, modifier: Modifier) {
         )
     )
 }
+
+@Composable
+fun LittleText(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        fontSize = 14.sp,
+        color = LightDirtyGray,
+        fontWeight = FontWeight.Normal,
+        modifier = modifier
+    )
+}
