@@ -51,7 +51,7 @@ fun SplashScreen(
         )
 
         while (profileApiViewModel.loading.value) {
-            delay(100L)
+            delay(200L)
         }
 
         if (LocalUser.Data.tag.value.isNotEmpty()) {
