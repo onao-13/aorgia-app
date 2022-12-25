@@ -14,6 +14,7 @@ import com.example.aorgia.data.local.LocalUser
 import com.example.aorgia.database.model.ProfileDbViewModel
 import com.example.aorgia.screens.auth.LoginScreen
 import com.example.aorgia.screens.auth.RegistrationScreen
+import com.example.aorgia.screens.main.EditProfileScreen
 import com.example.aorgia.screens.main.HomeScreen
 import com.example.aorgia.screens.main.MainScreen
 import com.example.aorgia.screens.main.ProfileScreen
@@ -157,9 +158,49 @@ fun AppNavigation(
             }
         }
         //main
-        composable(Main.route) { MainScreen(navController, LocalUser.Data) }
         composable(
-            route = Home.route,
+            route = Main.route,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    EditProfile.route ->
+                        slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    Main.route ->
+                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, tween(animMs))
+                    else -> null
+                }
+            }
+        ) { MainScreen(navController, LocalUser.Data) }
+        composable(
+            route = EditProfile.route,
+            enterTransition = {
+                when (initialState.destination.route) {
+                    Main.route ->
+                        slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(animMs))
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    EditProfile.route ->
+                        slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, tween(animMs))
+                    else -> null
+                }
+            }
+        ) {
+            EditProfileScreen(
+                navController,
+                profileApiViewModel,
+                profileApiViewModel.loading,
+                profileApiViewModel.isTagExists
+            )
+        }
+//        composable(
+//            route = Home.route,
 //            enterTransition = {
 //                when (initialState.destination.route) {
 //                    Profile.route ->
@@ -174,9 +215,9 @@ fun AppNavigation(
 //                    else -> null
 //                }
 //            }
-        ) { HomeScreen() }
-        composable(
-            route = Profile.route,
+//        ) { HomeScreen() }
+//        composable(
+//            route = Profile.route,
 //            enterTransition = {
 //                when (initialState.destination.route) {
 //                    Home.route ->
@@ -191,8 +232,8 @@ fun AppNavigation(
 //                    else -> null
 //                }
 //            }
-        ) {
-            ProfileScreen(LocalUser.Data)
-        }
+//        ) {
+//            ProfileScreen(LocalUser.Data, navController)
+//        }
     }
 }

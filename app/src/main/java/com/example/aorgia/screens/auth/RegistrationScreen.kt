@@ -37,8 +37,8 @@ fun RegistrationScreen(
     val userIcon =  remember {
         mutableStateOf<Bitmap?>(null)
     }
-    val tag = remember { mutableStateOf("") }
     val imageUri = remember { mutableStateOf<Uri?>(null) }
+    val tag = remember { mutableStateOf("") }
 
     val sliderScreens = listOf<SliderScreen>(
         SliderScreen {

@@ -35,7 +35,9 @@ fun MainScreen(
         ) {
             when (selectedScreen.value) {
                 Screen.Home.route -> HomeScreen()
-                Screen.Profile.route -> ProfileScreen(userData)
+                Screen.Profile.route -> ProfileScreen(userData) {
+                    navController.navigate(Screen.EditProfile.route)
+                }
             }
         }
     }

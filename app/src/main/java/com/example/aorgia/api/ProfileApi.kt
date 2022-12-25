@@ -16,5 +16,5 @@ interface ProfileApi {
     suspend fun getProfile(@Query("email") email: String): Response<User>
 
     @PUT("/api/account/update-user-data")
-    suspend fun updateUserData(@Body user: UpdatedUser): Response<ResponseBody>
+    suspend fun updateUserData(@Body user: User): Response<ResponseBody>
 }

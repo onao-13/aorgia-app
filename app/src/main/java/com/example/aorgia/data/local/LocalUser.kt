@@ -17,4 +17,14 @@ class LocalUser {
         Data.icon.value = user.linkToIcon
         Data.tag.value = user.tag
     }
+
+    fun updateUserData(
+        username: String,
+        tag: String,
+        icon: String
+    ) {
+        Data.username.value = username
+        Data.icon.value = icon
+        Data.tag.value = tag
+    }
 }

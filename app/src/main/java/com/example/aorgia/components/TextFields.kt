@@ -9,6 +9,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.aorgia.components.values.ComponentWidth
 import com.example.aorgia.ui.theme.LightDirtyGray
@@ -37,3 +38,27 @@ fun MainTextField(
         )
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EmptyShapeTextField(
+    text: MutableState<String>,
+    modifier: Modifier
+) {
+    TextField(
+        value = text.value,
+        onValueChange = { text.value = it },
+        modifier = modifier
+            .fillMaxWidth(ComponentWidth.MainWidth85f.width)
+            .height(60.dp),
+        singleLine = true,
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = LightDirtyGray,
+            containerColor = Color.Transparent,
+            cursorColor = LightDirtyGray,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedLabelColor = Color.Transparent
+        )
+    )
+}
+

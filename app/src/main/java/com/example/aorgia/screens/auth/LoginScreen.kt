@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.example.aorgia.api.model.AuthApiViewModel
 import com.example.aorgia.app.navigation.Screen
 import com.example.aorgia.components.ErrorSnackbar
+import com.example.aorgia.components.LoadingIndicatorWithErrorSnackbar
 import com.example.aorgia.components.MainButton
 import com.example.aorgia.components.MainTitle
 import com.example.aorgia.components.forms.LoginForm
@@ -98,19 +99,13 @@ fun LoginScreen(
                 }
         )
 
-        Box(Modifier.fillMaxSize()) {
-            if (loading.value) {
-                CircularProgressIndicator(Modifier.align(Center))
-            }
-            if (isUserNotFound.value) {
-                ErrorSnackbar(
-                    "Возможно, ты неправильно ввел почту или пароль",
-                    Modifier.align(BottomCenter),
-                    isUserNotFound
-                )
-                email.value = ""
-                password.value = ""
-            }
+        LoadingIndicatorWithErrorSnackbar(
+            loading = loading,
+            error = isUserNotFound,
+            errorText = "Возможно, ты неправильно ввел почту или пароль"
+        ) {
+            email.value = ""
+            password.value = ""
         }
     }
 }

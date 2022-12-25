@@ -2,29 +2,22 @@ package com.example.aorgia.screens.auth.slidescreens
 
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.aorgia.components.ErrorSnackbar
+import com.example.aorgia.components.LoadingIndicatorWithErrorSnackbar
 import com.example.aorgia.components.MainButton
-import com.example.aorgia.components.image.PickImage
-import com.example.aorgia.components.image.UserIconImage
+import com.example.aorgia.components.image.PickImageWithPreview
+import com.example.aorgia.components.image.UpdatedPickImageWithPreview
 import com.example.aorgia.ui.theme.LightDirtyGray
 
 @Composable
@@ -39,38 +32,16 @@ fun AddUserIcon(
     ConstraintLayout(Modifier.fillMaxSize()) {
         val (icon, nickname, nextButton) = createRefs()
 
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(CenterHorizontally)
+        PickImageWithPreview(
+            bitmap = userIcon,
+            uri = imageUri,
+            modifier = Modifier
                 .constrainAs(icon) {
                     top.linkTo(parent.top, margin = 140.dp)
-                }
-        ) {
-            if (userIcon.value == null) {
-                PickImage(userIcon, imageUri) {
-                    Button(
-                        onClick = it,
-                        shape = CircleShape,
-                        modifier = Modifier
-                            .size(250.dp)
-                    ) {
-
-                    }
-                }
-            } else {
-                userIcon.value?.let { icon ->
-                    userIcon.value = icon
-                    PickImage(userIcon, imageUri) { click ->
-                        UserIconImage(
-                            size = 250.dp,
-                            userIcon = icon,
-                            modifier = Modifier.clickable { click() }
-                        )
-                    }
-                }
-            }
-        }
+                },
+            shape = CircleShape,
+            size = 250.dp
+        )
 
         Text(
             text = username,
@@ -98,25 +69,10 @@ fun AddUserIcon(
             enabled = userIcon.value != null
         )
 
-        Box(Modifier.fillMaxSize()) {
-            val loadingPos = LocalConfiguration.current.screenWidthDp.dp / 2 - 26.dp
-            if (loading.value) {
-                CircularProgressIndicator(
-                    Modifier
-                        .align(CenterEnd)
-                        .padding(
-                            end = loadingPos
-                        )
-                )
-            }
-            if (isUserExists.value) {
-                ErrorSnackbar(
-                    "Пользователь с такой почтой \n существует",
-                    Modifier
-                        .align(Alignment.BottomEnd),
-                    isUserExists
-                )
-            }
-        }
+        LoadingIndicatorWithErrorSnackbar(
+            loading = loading,
+            error = isUserExists,
+            errorText = "Пользователь с такой почтой \n существует"
+        )
     }
 }
